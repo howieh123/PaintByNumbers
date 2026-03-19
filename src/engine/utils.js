@@ -1,3 +1,5 @@
+import { getDominantColors, applyPalette } from './quantizer';
+
 export function downscaleImage(image, maxDim = 400) {
   const canvas = document.createElement('canvas');
   let width = image.width;
@@ -25,4 +27,19 @@ export function downscaleImage(image, maxDim = 400) {
 export function getPixelData(canvas) {
   const ctx = canvas.getContext('2d');
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+export function processImage(image, maxDim = 1200, colorCount = 6) {
+  const canvas = downscaleImage(image, maxDim);
+  const pixelData = getPixelData(canvas);
+  const palette = getDominantColors(pixelData, colorCount);
+  const quantizedData = applyPalette(pixelData, palette);
+  
+  return {
+    canvas,
+    palette,
+    quantizedData,
+    width: canvas.width,
+    height: canvas.height
+  };
 }

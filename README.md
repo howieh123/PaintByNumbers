@@ -5,10 +5,10 @@ A web-based tool that transforms images into animated "Paint-by-Numbers" style v
 ## 🚀 Key Features
 
 - **Image Downscaling & Pre-processing**: Optimized for performance while maintaining visual fidelity.
-- **Dominant Color Extraction**: Uses custom quantization algorithms to identify the primary palette of any image.
-- **Smart Segmentation**: Automatically identifies distinct regions based on color and proximity.
+- **Dominant Color Extraction**: Custom k-means++ quantization optimized for a clean, 6-color palette.
+- **Smart Segmentation**: Automatically identifies distinct regions based on color and proximity, merging tiny areas for visual clarity.
 - **Edge Detection**: Precisely maps the "lines" for the paint-by-numbers effect.
-- **Animation Engine**: Reconstructs the image region-by-region in a visually satisfying animation.
+- **Animation Engine**: Reconstructs the image region-by-region in a visually satisfying animation, ending with a clean "final" frame that matches the original photo.
 - **MP4 Video Export**: Integrated with **FFmpeg.wasm** to encode the animation directly in the browser.
 
 ## 🛠 Tech Stack

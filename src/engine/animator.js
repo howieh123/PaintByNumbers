@@ -53,16 +53,20 @@ export function startAnimation(canvas, regions, edges, palette, onFrame, onCompl
   }
 
   function renderFrame(phase, phaseElapsed) {
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
     ctx.drawImage(offCanvas, 0, 0);
 
     if (phase.name === 'fill') {
-      const progress = phaseElapsed / phase.duration;
+      const progress = Math.min(1.0, phaseElapsed / phase.duration);
       fillColorRegions(ctx, regions, phase.colorIdx, palette, width, height, progress);
     }
 
-    drawOutlines(ctx, edges, width, height);
-    drawNumbers(ctx, regions, regionCenters);
+    // Only draw outlines and numbers if NOT in the final phase
+    if (phase.name !== 'final') {
+      drawOutlines(ctx, edges, width, height);
+      drawNumbers(ctx, regions, regionCenters);
+    }
   }
 
   requestAnimationFrame(frame);

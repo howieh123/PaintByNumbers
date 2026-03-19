@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { downscaleImage, getPixelData } from './engine/utils';
-import { getDominantColors, applyPalette } from './engine/quantizer';
-import { segmentImage, findEdges } from './engine/segmenter';
+import { processImage } from './engine/utils';
+import { findEdges } from './engine/segmenter';
 import { startAnimation, recordCanvas } from './engine/animator';
 
 const { createFFmpeg } = FFmpeg;
@@ -57,33 +56,20 @@ function App() {
     if (!file) return;
 
     setStatus('processing');
-    setProgress('Downscaling image...');
+    setProgress('Processing image (Downscaling & Quantizing)...');
     try {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       await img.decode();
 
-      const canvas = downscaleImage(img, 1200);
-      const pixelData = getPixelData(canvas);
-      
-      setProgress('Finding dominant colors...');
-      const palette = getDominantColors(pixelData, 16);
-      
-      setProgress('Applying palette...');
-      const quantizedData = applyPalette(pixelData, palette);
+      const processedData = processImage(img, 1200, 6);
+      dataRef.current = processedData;
 
-      dataRef.current = {
-        canvas,
-        palette,
-        quantizedData,
-        width: canvas.width,
-        height: canvas.height
-      };
-
+      const { canvas, quantizedData, width, height } = processedData;
       const ctx = canvasRef.current.getContext('2d');
-      canvasRef.current.width = canvas.width;
-      canvasRef.current.height = canvas.height;
-      ctx.putImageData(new ImageData(quantizedData, canvas.width, canvas.height), 0, 0);
+      canvasRef.current.width = width;
+      canvasRef.current.height = height;
+      ctx.putImageData(new ImageData(quantizedData, width, height), 0, 0);
 
       setStatus('ready');
       setProgress('');
